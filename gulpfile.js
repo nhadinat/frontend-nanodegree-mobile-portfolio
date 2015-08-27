@@ -3,7 +3,8 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concatCss = require('gulp-concat-css'),
     minifyCSS = require('gulp-minify-css'),
-    minifyHTML = require('gulp-minify-html');
+    minifyHTML = require('gulp-minify-html'),
+    rename = require("gulp-rename");
 
 // Minify HTML
 gulp.task('html', function() {
@@ -12,23 +13,35 @@ gulp.task('html', function() {
         spare:true
     };
 
-    return gulp.src(['*.html', 'view/.html'])
+    return gulp.src(['*.html', 'views/.html'])
         .pipe(minifyHTML(opts))
         .pipe(gulp.dest('dist/'));
 });
 
 // Concatenate And Minify JavaScript
 gulp.task('scripts', function(){
-    gulp.src(['js/*.js', 'view/js/*.js'])
-        .pipe(concat('app.min.js'))
+    gulp.src('js/perfmatters.js')
+        .pipe(rename('perfmatters.min.js'))
+        .pipe(uglify())
+        .pipe(gulp.dest('dist/js/'));
+    gulp.src('views/js/main.js')
+        .pipe(rename('main.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/js/'));
 });
 
 // Concatenate And Minify CSS
 gulp.task('styles', function(){
-    gulp.src(['css/*.css', 'view/css/*.css'])
-        .pipe(concatCss('style.min.css'))
+    gulp.src('css/style.css')
+        .pipe(rename('style.min.css'))
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('dist/css/'));
+    gulp.src('css/print.css')
+        .pipe(rename('print.min.css'))
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('dist/css/'));
+    gulp.src(['views/css/*.css'])
+        .pipe(concatCss('pizza.min.css'))
         .pipe(minifyCSS())
         .pipe(gulp.dest('dist/css/'));
 });
