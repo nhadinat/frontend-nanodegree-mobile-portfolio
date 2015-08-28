@@ -81,11 +81,11 @@ gulp.task('styles', function(){
   return merge(style, print, pizzastyle);
 });
 
+// Default
+gulp.task('default', ['images', 'png', 'html', 'scripts', 'styles']);
+
 // Publish to gh-pages
 gulp.task('deploy', function() {
   return gulp.src('dist/**/**/*')
   .pipe(ghPages());
 });
-
-// Default
-gulp.task('default', ['images', 'png', 'html', 'scripts', 'styles', 'deploy']);
