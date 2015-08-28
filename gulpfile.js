@@ -4,7 +4,18 @@ var gulp = require('gulp'),
     concatCss = require('gulp-concat-css'),
     minifyCSS = require('gulp-minify-css'),
     minifyHTML = require('gulp-minify-html'),
-    rename = require("gulp-rename");
+    rename = require("gulp-rename"),
+    merge = require('merge-stream');
+
+// Move Images Into Dist
+gulp.task('images', function() {
+    var portfolio = gulp.src('img/*')
+        .pipe(gulp.dest('dist/img'));
+    var pizza = gulp.src('views/images/*')
+        .pipe(gulp.dest('dist/views/img'));
+
+    return merge(portfolio, pizza);
+});
 
 // Minify HTML
 gulp.task('html', function() {
@@ -13,40 +24,46 @@ gulp.task('html', function() {
         spare:true
     };
 
-    return gulp.src('*.html')
+    var portfolio = gulp.src('*.html')
         .pipe(minifyHTML(opts))
-        .pipe(gulp.dest('dist/'));
-    return gulp.src('views/pizza.html')
+        .pipe(gulp.dest('dist'));
+    var pizza = gulp.src('views/pizza.html')
         .pipe(minifyHTML(opts))
-        .pipe(gulp.dest('dist/views/'));
+        .pipe(gulp.dest('dist/views'));
+
+    return merge(portfolio, pizza);
 });
 
 // Concatenate And Minify JavaScript
 gulp.task('scripts', function(){
-    gulp.src('js/perfmatters.js')
+    var portfolio = gulp.src('js/perfmatters.js')
         .pipe(rename('perfmatters.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('dist/js/'));
-    gulp.src('views/js/main.js')
+        .pipe(gulp.dest('dist/js'));
+    var pizza = gulp.src('views/js/main.js')
         .pipe(rename('main.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('dist/views/js/'));
+        .pipe(gulp.dest('dist/views/js'));
+
+    return merge(portfolio, pizza);
 });
 
 // Concatenate And Minify CSS
 gulp.task('styles', function(){
-    gulp.src('css/style.css')
+    var style = gulp.src('css/style.css')
         .pipe(rename('style.min.css'))
         .pipe(minifyCSS())
-        .pipe(gulp.dest('dist/css/'));
-    gulp.src('css/print.css')
+        .pipe(gulp.dest('dist/css'));
+    var print = gulp.src('css/print.css')
         .pipe(rename('print.min.css'))
         .pipe(minifyCSS())
-        .pipe(gulp.dest('dist/css/'));
-    gulp.src(['views/css/*.css'])
+        .pipe(gulp.dest('dist/css'));
+    var pizzastyle = gulp.src('views/css/*.css')
         .pipe(concatCss('pizza.min.css'))
         .pipe(minifyCSS())
-        .pipe(gulp.dest('dist/views/css/'));
+        .pipe(gulp.dest('dist/views/css'));
+
+    return merge(style, print, pizzastyle);
 });
 
 gulp.task('default', ['html', 'scripts', 'styles']);
