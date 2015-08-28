@@ -16,7 +16,7 @@ gulp.task('html', function() {
     return gulp.src('*.html')
         .pipe(minifyHTML(opts))
         .pipe(gulp.dest('dist/'));
-    return gulp.src('views/.html')
+    return gulp.src('views/pizza.html')
         .pipe(minifyHTML(opts))
         .pipe(gulp.dest('dist/views/'));
 });
