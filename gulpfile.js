@@ -66,4 +66,4 @@ gulp.task('styles', function(){
     return merge(style, print, pizzastyle);
 });
 
-gulp.task('default', ['html', 'scripts', 'styles']);
+gulp.task('default', ['images', 'html', 'scripts', 'styles']);
