@@ -15,7 +15,7 @@ gulp.task('images', function() {
   var portfolio = gulp.src('src/img/*.jpg')
     .pipe(gulp.dest('dist/img'));
   var pizza = gulp.src('src/views/images/*.jpg')
-    .pipe(gulp.dest('dist/views/img'));
+    .pipe(gulp.dest('dist/views/images'));
 
   return merge(portfolio, pizza);
 });
@@ -27,7 +27,7 @@ gulp.task('png', function () {
     .pipe(gulp.dest('dist/img'));
   var pizza = gulp.src('src/views/images/*.png')
     .pipe(imageminPngquant({quality: '65-80', speed: 4})())
-    .pipe(gulp.dest('dist/views/img'));
+    .pipe(gulp.dest('dist/views/images'));
 
   return merge(portfolio, pizza);
 });
