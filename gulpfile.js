@@ -38,11 +38,11 @@ gulp.task('scripts', function(){
   var portfolio = gulp.src('src/js/perfmatters.js')
     .pipe(rename('perfmatters.min.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/js'));
+    .pipe(gulp.dest('src/js'));
   var pizza = gulp.src('src/views/js/main.js')
     .pipe(rename('main.min.js'))
     .pipe(uglify())
-    .pipe(gulp.dest('dist/views/js'));
+    .pipe(gulp.dest('src/views/js'));
 
   return merge(portfolio, pizza);
 });
@@ -52,7 +52,7 @@ gulp.task('styles', function(){
   var style = gulp.src('src/css/style.css')
     .pipe(rename('style.min.css'))
     .pipe(minifyCSS())
-    .pipe(gulp.dest('dist/css'));
+    .pipe(gulp.dest('src/css'));
   var print = gulp.src('src/css/print.css')
     .pipe(rename('print.min.css'))
     .pipe(minifyCSS())
@@ -60,7 +60,7 @@ gulp.task('styles', function(){
   var pizzastyle = gulp.src('src/views/css/*.css')
     .pipe(concatCss('pizza.min.css'))
     .pipe(minifyCSS())
-    .pipe(gulp.dest('dist/views/css'));
+    .pipe(gulp.dest('src/views/css'));
 
   return merge(style, print, pizzastyle);
 });
