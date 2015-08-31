@@ -84,26 +84,13 @@ gulp.task('html', function() {
   return merge(portfolio, pizza);
 });
 
-// Inline Sources in HTML
-gulp.task('inline', function() {
-  var portfolio = gulp.src('dist/*.html')
-    .pipe(inlinesource())
-    .pipe(gulp.dest('dist'));
-  var pizza = gulp.src('dist/views/pizza.html')
-    .pipe(inlinesource())
-    .pipe(gulp.dest('dist/views'));
-
-  return merge(portfolio, pizza);
-});
-
 // Default
 gulp.task('default', [
   'images',
   'png',
   'scripts',
   'styles',
-  'html',
-  'inline'
+  'html'
   ]);
 
 // Publish to gh-pages
