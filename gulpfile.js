@@ -7,11 +7,12 @@ var gulp = require('gulp'),
   concatCss = require('gulp-concat-css'),
   minifyCSS = require('gulp-minify-css'),
   rename = require("gulp-rename"),
-  inlinesource = require('gulp-inline-source'),
   minifyHTML = require('gulp-minify-html'),
+  uncss = require('gulp-uncss'),
+  inlinesource = require('gulp-inline-source'),
   ghPages = require('gulp-gh-pages');
 
-// Move JPGs Into Dist
+// Move JPGs Into Dist (Unfortunately, I cannot use imagemin because I run Win7 :'( )
 gulp.task('images', function() {
   var portfolio = gulp.src('./src/img/*.jpg')
     .pipe(gulp.dest('./dist/img'));
@@ -57,12 +58,16 @@ gulp.task('styles', function(){
     .pipe(rename('print.min.css'))
     .pipe(minifyCSS())
     .pipe(gulp.dest('./dist/css'));
-  var pizzastyle = gulp.src('./src/views/css/*.css')
-    .pipe(concatCss('pizza.min.css'))
+  var pizzastyle = gulp.src('./src/views/css/style.css')
+    .pipe(rename('style.min.css'))
+    .pipe(minifyCSS())
+    .pipe(gulp.dest('./dist/views/css'));
+  var bootstrap = gulp.src('./src/views/css/bootstrap-grid.css')
+    .pipe(rename('bootstrap-grid.min.css'))
     .pipe(minifyCSS())
     .pipe(gulp.dest('./dist/views/css'));
 
-  return merge(style, print, pizzastyle);
+  return merge(style, print, pizzastyle, bootstrap);
 });
 
 // Minify HTML
@@ -74,7 +79,7 @@ gulp.task('html', function() {
 
   var portfolio = gulp.src('./src/*.html')
     .pipe(minifyHTML(opts))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('./dist'));
   var pizza = gulp.src('./src/views/pizza.html')
     .pipe(minifyHTML(opts))
     .pipe(gulp.dest('./dist/views'));
@@ -82,11 +87,29 @@ gulp.task('html', function() {
   return merge(portfolio, pizza);
 });
 
+/* TODO: Figure out how unCSS actually works
+// UnCSS the HTML
+gulp.task('uncss', ['html'], function() {
+  var portfolio = gulp.src('./dist/css/style.min.css')
+    .pipe(uncss({
+        html: './dist/*.html'
+      }))
+    .pipe(gulp.dest('./dist/css'));
+  var pizza = gulp.src('./dist/views/css/bootstrap-grid.min.css')
+    .pipe(uncss({
+        html: './dist/views/pizza.html'
+      }))
+    .pipe(gulp.dest('./dist/views/css'));
+
+  return pizza;
+});
+*/
+
 // Inline Sources in HTML
 gulp.task('inline', ['build'], function() {
   var portfolio = gulp.src('./dist/*.html')
     .pipe(inlinesource())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('./dist'));
   var pizza = gulp.src('./dist/views/pizza.html')
     .pipe(inlinesource())
     .pipe(gulp.dest('./dist/views'));
@@ -106,7 +129,7 @@ gulp.task('build', [
 // DEFAULT: Build then Inline
 gulp.task('default', [
   'build',
-  'inline'
+  'inline',
   ]);
 
 // Publish to gh-pages
