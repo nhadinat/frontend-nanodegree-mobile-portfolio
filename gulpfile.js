@@ -8,7 +8,7 @@ var gulp = require('gulp'),
   minifyCSS = require('gulp-minify-css'),
   rename = require("gulp-rename"),
   minifyHTML = require('gulp-minify-html'),
-  uncss = require('gulp-uncss'),
+  // uncss = require('gulp-uncss'),
   inlinesource = require('gulp-inline-source'),
   ghPages = require('gulp-gh-pages');
 
@@ -48,7 +48,7 @@ gulp.task('scripts', function(){
   return merge(portfolio, pizza);
 });
 
-// Concatenate And Minify CSS
+// Minify CSS
 gulp.task('styles', function(){
   var style = gulp.src('./src/css/style.css')
     .pipe(rename('style.min.css'))
@@ -101,7 +101,7 @@ gulp.task('uncss', ['html'], function() {
       }))
     .pipe(gulp.dest('./dist/views/css'));
 
-  return pizza;
+  return merge(portfolio, pizza);
 });
 */
 
