@@ -497,12 +497,17 @@ function updatePositions() {
   window.performance.mark("mark_start_frame");
 
   var items = document.querySelectorAll('.mover');
+  // move phase out of the for loop. document.body.scrollTop ranges 0 - 12044.
+  // When divided by 1250, your range is 0 to 9.64... + 0 - 4... so 0 - 12.64.
+  // sin(0) through sin(4pi), where 2pi is 0... You'll get the same value twice as
+  // you scroll down.
+  var phase = Math.sin((document.body.scrollTop / 1250));
   for (var i = 0; i < items.length; i++) {
     // scrollTop is 0 at the top of screen. i is 0 through 4.
     // Sine of anything will be 1 or -1, then it is amplified by 100
     // so it's 100 to -100 position
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
-    items[i].style.left = 100 * phase + 'px'; // items[0].basicLeft0px
+    phase = phase + (i % 5);
+    items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; // items[0].basicLeft0px
   }
 
 /////////////////////////////////// FSL //////////////////////////////
