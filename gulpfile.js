@@ -126,14 +126,15 @@ gulp.task('build', [
   'html'
   ]);
 
-// DEFAULT: Build then Inline
+// DEFAULT: Build, Inline Sources, then Deploy
 gulp.task('default', [
   'build',
   'inline',
+  'deploy'
   ]);
 
 // Publish to gh-pages
-gulp.task('deploy', function() {
+gulp.task('deploy', ['inline'], function() {
   return gulp.src('./dist/**/**/*')
   .pipe(ghPages());
 });
