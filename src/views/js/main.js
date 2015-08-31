@@ -407,15 +407,12 @@ var resizePizzas = function(size) {
     switch(size) {
       case "1":
         document.querySelector("#pizzaSize").innerHTML = "Small";
-        return;
         break;
       case "2":
         document.querySelector("#pizzaSize").innerHTML = "Medium";
-        return;
         break;
       case "3":
         document.querySelector("#pizzaSize").innerHTML = "Large";
-        return;
         break;
       default:
         console.log("bug in changeSliderLabel");
@@ -426,18 +423,19 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    var randomPizzas = document.querySelectorAll(".randomPizzaContainer")
+    var randomPizzas = document.querySelectorAll(".randomPizzaContainer");
+    var newWidth;
 
-    //Get a size value based on the condition of the slider.
+    //Get a size value based on the condition of the slider. Turn value into percentage.
     switch(size) {
       case "1":
-        return 0.25;
+        newWidth = 25;
         break;
       case "2":
-        return 0.3333;
+        newWidth = 33.3;
         break;
       case "3":
-        return 0.5;
+        newWidth = 50;
         break;
       default:
         console.log("bug in sizeSwitcher");
@@ -445,7 +443,7 @@ var resizePizzas = function(size) {
 
     // For every random pizza box, resize it's width to the size value percentage.
     for (var i = 0; i < randomPizzas.length; i++) {
-      randomPizzas[i].style.width = size + '%';
+      randomPizzas[i].style.width = newWidth + '%';
     }
   }
 
@@ -486,6 +484,10 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   console.log("Average time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
+/////////////////////////////////// FSL //////////////////////////////
+/////////////////////////////////// FSL //////////////////////////////
+/////////////////////////////////// FSL //////////////////////////////
+
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
@@ -496,9 +498,16 @@ function updatePositions() {
 
   var items = document.querySelectorAll('.mover');
   for (var i = 0; i < items.length; i++) {
+    // scrollTop is 0 at the top of screen. i is 0 through 4.
+    // Sine of anything will be 1 or -1, then it is amplified by 100
+    // so it's 100 to -100 position
     var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    items[i].style.left = 100 * phase + 'px'; // items[0].basicLeft0px
   }
+
+/////////////////////////////////// FSL //////////////////////////////
+/////////////////////////////////// FSL //////////////////////////////
+/////////////////////////////////// FSL //////////////////////////////
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
   // Super easy to create custom metrics.
