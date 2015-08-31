@@ -1,16 +1,17 @@
 var gulp = require('gulp'),
+  merge = require('merge-stream'),
+  imageminPngquant = require('imagemin-pngquant'),
   concat = require('gulp-concat'),
   uglify = require('gulp-uglify'),
   concatCss = require('gulp-concat-css'),
   minifyCSS = require('gulp-minify-css'),
-  minifyHTML = require('gulp-minify-html'),
   rename = require("gulp-rename"),
-  merge = require('merge-stream'),
-  imageminPngquant = require('imagemin-pngquant'),
+  inlinesource = require('gulp-inline-source'),
+  minifyHTML = require('gulp-minify-html'),
   ghPages = require('gulp-gh-pages');
 
 
-// Move jpgs Into Dist
+// Move JPGs Into Dist
 gulp.task('images', function() {
   var portfolio = gulp.src('src/img/*.jpg')
     .pipe(gulp.dest('dist/img'));
@@ -28,23 +29,6 @@ gulp.task('png', function () {
   var pizza = gulp.src('src/views/images/*.png')
     .pipe(imageminPngquant({quality: '65-80', speed: 4})())
     .pipe(gulp.dest('dist/views/images'));
-
-  return merge(portfolio, pizza);
-});
-
-// Minify HTML
-gulp.task('html', function() {
-  var opts = {
-    conditionals: true,
-    spare:true
-  };
-
-  var portfolio = gulp.src('src/*.html')
-    .pipe(minifyHTML(opts))
-    .pipe(gulp.dest('dist'));
-  var pizza = gulp.src('src/views/pizza.html')
-    .pipe(minifyHTML(opts))
-    .pipe(gulp.dest('dist/views'));
 
   return merge(portfolio, pizza);
 });
@@ -81,8 +65,27 @@ gulp.task('styles', function(){
   return merge(style, print, pizzastyle);
 });
 
+// Minify HTML
+gulp.task('html', function() {
+  var opts = {
+    conditionals: true,
+    spare:true
+  };
+
+  var portfolio = gulp.src('src/*.html')
+    .pipe(inlinesource())
+    .pipe(minifyHTML(opts))
+    .pipe(gulp.dest('dist'));
+  var pizza = gulp.src('src/views/pizza.html')
+    .pipe(inlinesource())
+    .pipe(minifyHTML(opts))
+    .pipe(gulp.dest('dist/views'));
+
+  return merge(portfolio, pizza);
+});
+
 // Default
-gulp.task('default', ['images', 'png', 'html', 'scripts', 'styles']);
+gulp.task('default', ['images', 'png', 'scripts', 'styles', 'html']);
 
 // Publish to gh-pages
 gulp.task('deploy', function() {
