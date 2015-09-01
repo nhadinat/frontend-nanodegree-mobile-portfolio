@@ -403,6 +403,7 @@ var resizePizzas = function(size) {
   window.performance.mark("mark_start_resize");   // User Timing API function
 
   // Changes the value for the size of the pizza above the slider
+  // Changed return to break, based on MDN specifications.
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
@@ -424,26 +425,26 @@ var resizePizzas = function(size) {
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
     var randomPizzas = document.querySelectorAll(".randomPizzaContainer");
-    var newWidth;
 
     //Get a size value based on the condition of the slider. Turn value into percentage.
+    var newWidth;
     switch(size) {
       case "1":
-        newWidth = 25;
+        newWidth = 25 + '%';
         break;
       case "2":
-        newWidth = 33.3;
+        newWidth = 33.3 + '%';
         break;
       case "3":
-        newWidth = 50;
+        newWidth = 50 + '%';
         break;
       default:
         console.log("bug in sizeSwitcher");
     }
 
-    // For every random pizza box, resize it's width to the size value percentage.
+    // For every random pizza box, resize it's width to the size value percentage, newWidth.
     for (var i = 0; i < randomPizzas.length; i++) {
-      randomPizzas[i].style.width = newWidth + '%';
+      randomPizzas[i].style.width = newWidth;
     }
   }
 
@@ -484,10 +485,6 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   console.log("Average time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
-/////////////////////////////////// FSL //////////////////////////////
-/////////////////////////////////// FSL //////////////////////////////
-/////////////////////////////////// FSL //////////////////////////////
-
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
@@ -497,22 +494,20 @@ function updatePositions() {
   window.performance.mark("mark_start_frame");
 
   var items = document.querySelectorAll('.mover');
-  // move phase out of the for loop. document.body.scrollTop ranges 0 - 12044.
-  // When divided by 1250, your range is 0 to 9.64... + 0 - 4... so 0 - 12.64.
-  // sin(0) through sin(4pi), where 2pi is 0... You'll get the same value twice as
-  // you scroll down.
-  var phase = Math.sin((document.body.scrollTop / 1250));
+
+  // Move "document.body.scrollTop" out of the for loop.
+  var scrollY = document.body.scrollTop;
+  // document.body.scrollTop ranges 0 to 12044. scrollY is 0 at the top of screen.
+  // When divided by 1250, the range is 0 to 9.64.
+  // (i % 5) will yield 0 to 4... so adding that will range 0 to 12.64.
+  // User will cycle through sin(0) to about sin(4pi), given that 4pi is about 12.57.
+
   for (var i = 0; i < items.length; i++) {
-    // scrollTop is 0 at the top of screen. i is 0 through 4.
-    // Sine of anything will be 1 or -1, then it is amplified by 100
-    // so it's 100 to -100 position
-    phase = phase + (i % 5);
+    // Sine of anything will always range -1 to 1, then it is multiplied by 100.
+    // So it's basicLeft -100px to 100px per pizza.
+    phase = Math.sin((scrollY / 1250) + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; // items[0].basicLeft0px
   }
-
-/////////////////////////////////// FSL //////////////////////////////
-/////////////////////////////////// FSL //////////////////////////////
-/////////////////////////////////// FSL //////////////////////////////
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
   // Super easy to create custom metrics.
