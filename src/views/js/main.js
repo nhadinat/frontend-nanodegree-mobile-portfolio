@@ -522,11 +522,16 @@ function updatePositions() {
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
-// Generates the sliding pizzas when the page loads.
+// Generates the sliding pizzas when the page loads. Reduced rendering by
+// applying will-change to .mover, then reduced the composite layer time
+// by reducing the number of pizzas generated.
 document.addEventListener('DOMContentLoaded', function() {
-  var cols = 8;
+  // Reduced number of pizzas by calculating how many cols needed by window width
+  var cols = window.innerWidth / 180;
+  // Then determine how many pizzas are needed to fill the page by col by window height
+  var totPizzas = cols * (window.innerHeight / 200);
   var s = 256;
-  for (var i = 0; i < 200; i++) {
+  for (var i = 0; i < totPizzas ; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";

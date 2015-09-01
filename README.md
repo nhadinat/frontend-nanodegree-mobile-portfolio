@@ -17,6 +17,7 @@ Visit [nhadinat.github.io/frontend-nanodegree-mobile-portfolio](http://nhadinat.
 * gulp watch
 * gulp clean
 * Minify HTML, JS, CSS
+* CSS Selector optimization (Child Selectors)
 * Inline CSS & JS
 * PNG optimization
 * src/ dist/ Development Organization
@@ -41,6 +42,7 @@ Visit [nhadinat.github.io/frontend-nanodegree-mobile-portfolio](http://nhadinat.
 
 * RAIL (Response, Animation, Idle, Load) performance optimization to eliminate jank
 * Forced Synchronous Layout bottleneck fix
+* Will-Change Transform to reduce paint costs
 * Unlimited Pizza
 
 Optimized views/pizza.html by modifying views/js/main.js until frames per second rate is 60 fps or higher.
