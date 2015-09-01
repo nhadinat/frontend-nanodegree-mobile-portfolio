@@ -408,13 +408,13 @@ var resizePizzas = function(size) {
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
-        document.getElementById(pizzaSize).innerHTML = "Small"; // getElement is faster
+        document.getElementById('pizzaSize').innerHTML = "Small"; // getElement is faster
         break;
       case "2":
-        document.getElementById(pizzaSize).innerHTML = "Medium"; // getElement is faster
+        document.getElementById('pizzaSize').innerHTML = "Medium"; // getElement is faster
         break;
       case "3":
-        document.getElementById(pizzaSize).innerHTML = "Large"; // getElement is faster
+        document.getElementById('pizzaSize').innerHTML = "Large"; // getElement is faster
         break;
       default:
         console.log("bug in changeSliderLabel");
@@ -425,7 +425,7 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    var randomPizzas = document.getElementsByClassName(randomPizzaContainer); // getElement is faster
+    var randomPizzas = document.getElementsByClassName('randomPizzaContainer'); // getElement is faster
 
     //Get a size value based on the condition of the slider. Turn value into percentage.
     var newWidth;
@@ -463,7 +463,7 @@ window.performance.mark("mark_start_generating"); // collect timing data
 // This for-loop actually creates and appends all of the pizzas when the page loads
 // Moved pizzasDiv outside of for loop so that it doesn't have to repetitively
 // get the same information.
-var pizzasDiv = document.getElementById("randomPizzas"); // getElement is faster
+var pizzasDiv = document.getElementById('randomPizzas'); // getElement is faster
 for (var i = 2; i < 100; i++) {
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
@@ -496,7 +496,7 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.getElementsByClassName(mover); // getElement is faster
+  var items = document.getElementsByClassName('mover'); // getElement is faster
 
   // Move "document.body.scrollTop" out of the for loop.
   var scrollY = document.body.scrollTop;
@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Removed elem declaration outside of for loop
   var elem;
   // Removed dom call from for loop and assigned to variable
-  var movingPizzas = document.getElementById("movingPizzas1");
+  var movingPizzas = document.getElementById('movingPizzas1'); // getElement is faster
 
   for (var i = 0; i < totPizzas ; i++) {
     elem = document.createElement('img'); // Removed elem var declaration
@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.width = "73.333px";
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    movingPizzas("movingPizzas1").appendChild(elem); // Removed dom call
+    movingPizzas.appendChild(elem); // Removed dom call
   }
   updatePositions();
 });
