@@ -2,15 +2,23 @@ var gulp = require('gulp'),
   del = require('del'),
   merge = require('merge-stream'),
   imageminPngquant = require('imagemin-pngquant'),
-  concat = require('gulp-concat'),
+  // concat = require('gulp-concat'),
   uglify = require('gulp-uglify'),
-  concatCss = require('gulp-concat-css'),
+  // concatCss = require('gulp-concat-css'),
   minifyCSS = require('gulp-minify-css'),
   rename = require("gulp-rename"),
   minifyHTML = require('gulp-minify-html'),
   // uncss = require('gulp-uncss'),
   inlinesource = require('gulp-inline-source'),
   ghPages = require('gulp-gh-pages');
+
+
+///////////////* Gulp Stream *///////////////
+
+// Clean Dist
+gulp.task('clean', function (cb) {
+  del(['./dist/**'], cb);
+});
 
 // Move JPGs Into Dist (Unfortunately, I cannot use imagemin because I run Win7 :'( )
 gulp.task('images', function() {
@@ -23,7 +31,7 @@ gulp.task('images', function() {
 });
 
 // Optimize PNGs
-gulp.task('pngs', function () {
+gulp.task('pngs', ['images'], function () {
   var portfolio = gulp.src('./src/img/*.png')
     .pipe(imageminPngquant({quality: '65-80', speed: 4})())
     .pipe(gulp.dest('./dist/img'));
@@ -35,7 +43,7 @@ gulp.task('pngs', function () {
 });
 
 // Concatenate And Minify JavaScript
-gulp.task('scripts', function(){
+gulp.task('scripts', ['pngs'], function(){
   var portfolio = gulp.src('./src/js/perfmatters.js')
     .pipe(rename('perfmatters.min.js'))
     .pipe(uglify())
@@ -49,7 +57,7 @@ gulp.task('scripts', function(){
 });
 
 // Minify CSS
-gulp.task('styles', function(){
+gulp.task('styles', ['scripts'], function(){
   var style = gulp.src('./src/css/style.css')
     .pipe(rename('style.min.css'))
     .pipe(minifyCSS())
@@ -71,7 +79,7 @@ gulp.task('styles', function(){
 });
 
 // Minify HTML
-gulp.task('html', function() {
+gulp.task('html', ['styles'], function() {
   var opts = {
     conditionals: true,
     spare:true
@@ -85,6 +93,25 @@ gulp.task('html', function() {
     .pipe(gulp.dest('./dist/views'));
 
   return merge(portfolio, pizza);
+});
+
+// Inline HTML Sources
+gulp.task('inline', ['html'], function() {
+  var portfolio = gulp.src('./dist/*.html')
+    .pipe(inlinesource())
+    .pipe(gulp.dest('./dist'));
+  var pizza = gulp.src('./dist/views/pizza.html')
+    .pipe(inlinesource())
+    .pipe(gulp.dest('./dist/views'));
+
+  return merge(portfolio, pizza);
+});
+
+
+// Publish to gh-pages
+gulp.task('deploy', ['inline'], function() {
+  return gulp.src('./dist/**/**/*')
+  .pipe(ghPages());
 });
 
 /* TODO: Figure out how unCSS actually works
@@ -105,41 +132,6 @@ gulp.task('uncss', ['html'], function() {
 });
 */
 
-// Inline Sources in HTML
-gulp.task('inline', ['build'], function() {
-  var portfolio = gulp.src('./dist/*.html')
-    .pipe(inlinesource())
-    .pipe(gulp.dest('./dist'));
-  var pizza = gulp.src('./dist/views/pizza.html')
-    .pipe(inlinesource())
-    .pipe(gulp.dest('./dist/views'));
-
-  return merge(portfolio, pizza);
-});
-
-// Combine into Build Task
-gulp.task('build', [
-  'images',
-  'pngs',
-  'scripts',
-  'styles',
-  'html'
-  ]);
-
-// DEFAULT: Build, Inline Sources, then Deploy
-gulp.task('default', [
-  'build',
-  'inline',
-  'deploy'
-  ]);
-
-// Publish to gh-pages
-gulp.task('deploy', ['inline'], function() {
-  return gulp.src('./dist/**/**/*')
-  .pipe(ghPages());
-});
-
-// Clean Dist Folder
-gulp.task('clean', function (cb) {
-  del(['./dist/**/**/*'], cb);
-});
+///////////////* Default *///////////////
+// DEFAULT Group: Clean, Optimize, Build, then Deploy
+gulp.task('default', ['images', 'pngs', 'scripts', 'styles', 'html', 'inline', 'deploy']);
