@@ -503,7 +503,7 @@ function updatePositions() {
   // User will cycle through sin(0) to about sin(4pi), given that 4pi is about 12.57.
 
   for (var i = 0; i < items.length; i++) {
-    // Sine of anything will always range -1 to 1, then it is multiplied by 100.
+    // Sin(x) where x is any given # will always range -1 to 1, then it is multiplied by 100.
     // So it's basicLeft -100px to 100px per pizza.
     phase = Math.sin((scrollY / 1250) + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; // items[0].basicLeft0px

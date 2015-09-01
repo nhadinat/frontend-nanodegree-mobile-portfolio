@@ -1,3 +1,5 @@
+///////////////* Setup *///////////////
+
 var gulp = require('gulp'),
   del = require('del'),
   merge = require('merge-stream'),
@@ -12,8 +14,7 @@ var gulp = require('gulp'),
   inlinesource = require('gulp-inline-source'),
   ghPages = require('gulp-gh-pages');
 
-
-///////////////* Gulp Stream *///////////////
+///////////////* Stream *///////////////
 
 // Clean Dist
 gulp.task('clean', function (cb) {
@@ -55,6 +56,15 @@ gulp.task('scripts', ['pngs'], function(){
 
   return merge(portfolio, pizza);
 });
+
+/* TODO: Figure out how to unCSS bootstrap
+// UnCSS Pizza HTML
+gulp.task('uncss', ['scripts'], function() {
+  return gulp.src('./src/views/css/bootstrap-grid.css')
+    .pipe(uncss({html: './src/views/pizza.html'}))
+    .pipe(gulp.dest('./dist/views/css'));
+});
+*/
 
 // Minify CSS
 gulp.task('styles', ['scripts'], function(){
@@ -107,31 +117,18 @@ gulp.task('inline', ['html'], function() {
   return merge(portfolio, pizza);
 });
 
-
 // Publish to gh-pages
 gulp.task('deploy', ['inline'], function() {
   return gulp.src('./dist/**/**/*')
   .pipe(ghPages());
 });
 
-/* TODO: Figure out how unCSS actually works
-// UnCSS the HTML
-gulp.task('uncss', ['html'], function() {
-  var portfolio = gulp.src('./dist/css/style.min.css')
-    .pipe(uncss({
-        html: './dist/*.html'
-      }))
-    .pipe(gulp.dest('./dist/css'));
-  var pizza = gulp.src('./dist/views/css/bootstrap-grid.min.css')
-    .pipe(uncss({
-        html: './dist/views/pizza.html'
-      }))
-    .pipe(gulp.dest('./dist/views/css'));
-
-  return merge(portfolio, pizza);
-});
-*/
-
 ///////////////* Default *///////////////
-// DEFAULT Group: Clean, Optimize, Build, then Deploy
+// DEFAULT Group: Optimize, Build, then Deploy
 gulp.task('default', ['images', 'pngs', 'scripts', 'styles', 'html', 'inline', 'deploy']);
+
+///////////////* Watch *///////////////
+// Watch
+gulp.task('watch', function () {
+    gulp.watch('./src/**', ['default']);
+});
