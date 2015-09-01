@@ -404,16 +404,17 @@ var resizePizzas = function(size) {
 
   // Changes the value for the size of the pizza above the slider
   // Changed return to break, based on MDN specifications.
+  // Changed Query Selector with getElement; it's faster.
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
-        document.querySelector("#pizzaSize").innerHTML = "Small";
+        document.getElementById(pizzaSize).innerHTML = "Small"; // getElement is faster
         break;
       case "2":
-        document.querySelector("#pizzaSize").innerHTML = "Medium";
+        document.getElementById(pizzaSize).innerHTML = "Medium"; // getElement is faster
         break;
       case "3":
-        document.querySelector("#pizzaSize").innerHTML = "Large";
+        document.getElementById(pizzaSize).innerHTML = "Large"; // getElement is faster
         break;
       default:
         console.log("bug in changeSliderLabel");
@@ -424,7 +425,7 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    var randomPizzas = document.querySelectorAll(".randomPizzaContainer");
+    var randomPizzas = document.getElementsByClassName(randomPizzaContainer); // getElement is faster
 
     //Get a size value based on the condition of the slider. Turn value into percentage.
     var newWidth;
@@ -460,8 +461,10 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+// Moved pizzasDiv outside of for loop so that it doesn't have to repetitively
+// get the same information.
+var pizzasDiv = document.getElementById("randomPizzas"); // getElement is faster
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -493,7 +496,7 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  var items = document.querySelectorAll('.mover');
+  var items = document.getElementsByClassName(mover); // getElement is faster
 
   // Move "document.body.scrollTop" out of the for loop.
   var scrollY = document.body.scrollTop;
@@ -502,10 +505,15 @@ function updatePositions() {
   // (i % 5) will yield 0 to 4... so adding that will range 0 to 12.64.
   // User will cycle through sin(0) to about sin(4pi), given that 4pi is about 12.57.
 
-  for (var i = 0; i < items.length; i++) {
+  // More efficient to have the end condition saved outside of for loop
+  var length = items.length;
+  // Originally had phase declared in loop. Removed it for efficiency.
+  var phase;
+
+  for (var i = 0; i < length; i++) {
     // Sin(x) where x is any given # will always range -1 to 1, then it is multiplied by 100.
     // So it's basicLeft -100px to 100px per pizza.
-    var phase = Math.sin((scrollY / 1250) + (i % 5));
+    phase = Math.sin((scrollY / 1250) + (i % 5));
     items[i].style.left = items[i].basicLeft + 100 * phase + 'px'; // items[0].basicLeft0px
   }
 
@@ -531,15 +539,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // Then determine how many pizzas are needed to fill the page by col by window height
   var totPizzas = cols * (window.innerHeight / 200);
   var s = 256;
+  // Removed elem declaration outside of for loop
+  var elem;
+  // Removed dom call from for loop and assigned to variable
+  var movingPizzas = document.getElementById("movingPizzas1");
+
   for (var i = 0; i < totPizzas ; i++) {
-    var elem = document.createElement('img');
+    elem = document.createElement('img'); // Removed elem var declaration
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
     elem.style.width = "73.333px";
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    movingPizzas("movingPizzas1").appendChild(elem); // Removed dom call
   }
   updatePositions();
 });
