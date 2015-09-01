@@ -98,7 +98,7 @@ gulp.task('html', ['styles'], function() {
   var portfolio = gulp.src('./src/*.html')
     .pipe(minifyHTML(opts))
     .pipe(gulp.dest('./dist'));
-  var pizza = gulp.src('./src/views/pizza.html')
+  var pizza = gulp.src('./src/views/*.html')
     .pipe(minifyHTML(opts))
     .pipe(gulp.dest('./dist/views'));
 
@@ -110,7 +110,7 @@ gulp.task('inline', ['html'], function() {
   var portfolio = gulp.src('./dist/*.html')
     .pipe(inlinesource())
     .pipe(gulp.dest('./dist'));
-  var pizza = gulp.src('./dist/views/pizza.html')
+  var pizza = gulp.src('./dist/views/*.html')
     .pipe(inlinesource())
     .pipe(gulp.dest('./dist/views'));
 
